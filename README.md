@@ -16,3 +16,5 @@ go get github.com/dghubble/oauth1
 to install: go install
 
 to run: cd $GOHOME/bin/ && ./tweeterdemo
+
+to view file: less /tmp/tweets.csv
