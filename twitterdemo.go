@@ -7,7 +7,6 @@ import (
 	"log"
 	"math/rand"
 	"os"
-	"reflect"
 	"strconv"
 	"sync"
 	"time"
@@ -16,6 +15,127 @@ import (
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
 )
+
+func stringifyTweets(tweet *twitter.Tweet) []string {
+	stringSlice := make([]string, 0)
+	coords := tweet.Coordinates
+	if coords != nil {
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", coords.Coordinates[0]))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", coords.Coordinates[1]))
+	}
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.CreatedAt))
+	currentUserRetweet := tweet.CurrentUserRetweet
+	if currentUserRetweet != nil {
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", currentUserRetweet.ID))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", currentUserRetweet.IDStr))
+	}
+	entities := tweet.Entities
+	if entities != nil {
+		for i := 0; i < len(entities.Hashtags); i++ {
+			stringSlice = append(stringSlice, fmt.Sprintf("%v", entities.Hashtags[i]))
+		}
+		for i := 0; i < len(entities.Media); i++ {
+			stringSlice = append(stringSlice, fmt.Sprintf("%v", entities.Media[i]))
+		}
+		for i := 0; i < len(entities.Urls); i++ {
+			stringSlice = append(stringSlice, fmt.Sprintf("%v", entities.Urls[i]))
+		}
+		for i := 0; i < len(entities.UserMentions); i++ {
+			stringSlice = append(stringSlice, fmt.Sprintf("%v", entities.UserMentions[i]))
+		}
+	}
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.FavoriteCount))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.Favorited))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.FilterLevel))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.ID))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.IDStr))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.InReplyToScreenName))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.InReplyToStatusID))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.InReplyToStatusIDStr))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.InReplyToUserID))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.InReplyToUserIDStr))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.Lang))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.PossiblySensitive))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.QuoteCount))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.ReplyCount))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.RetweetCount))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.Retweeted))
+	// skiping retweeted status
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.Source))
+	// skipping scopes
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.Text))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.FullText))
+	// skipping indices
+	place := tweet.Place
+	if place != nil {
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", place.Country))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", place.CountryCode))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", place.FullName))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", place.ID))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", place.Name))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", place.PlaceType))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", place.URL))
+	}
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.Truncated))
+	user := tweet.User
+	if user != nil {
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ContributorsEnabled))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.CreatedAt))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.DefaultProfile))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.DefaultProfileImage))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.Description))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.Email))
+		// skipping user entities
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.FavouritesCount))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.FollowRequestSent))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.Following))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.FollowersCount))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.FriendsCount))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.GeoEnabled))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ID))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.IDStr))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.IsTranslator))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.Lang))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ListedCount))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.Location))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.Name))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.Notifications))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ProfileBackgroundColor))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ProfileBackgroundImageURL))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ProfileBackgroundImageURLHttps))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ProfileBackgroundTile))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ProfileBannerURL))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ProfileImageURL))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ProfileImageURLHttps))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ProfileLinkColor))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ProfileSidebarBorderColor))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ProfileSidebarFillColor))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ProfileTextColor))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ProfileUseBackgroundImage))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.Protected))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ScreenName))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.ShowAllInlineMedia))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.StatusesCount))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.Timezone))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.URL))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.UtcOffset))
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.Verified))
+		// skiiping whitheld in countries
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", user.WithholdScope))
+	}
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.WithheldCopyright))
+	for i := 0; i < len(tweet.WithheldInCountries); i++ {
+		stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.WithheldInCountries[i]))
+	}
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.WithheldScope))
+	// skiiping extended entities
+	// skipping extended tweet
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.QuotedStatusID))
+	stringSlice = append(stringSlice, fmt.Sprintf("%v", tweet.QuotedStatusIDStr))
+	// skipping quoted status
+
+	return stringSlice
+}
 
 func getTweets(ch chan int, w *csv.Writer, tweetMap map[string]int, mux *sync.Mutex, keepGoing bool) {
 
@@ -84,13 +204,14 @@ func getTweets(ch chan int, w *csv.Writer, tweetMap map[string]int, mux *sync.Mu
 			if ok == false {
 				tweetMap[search.Statuses[i].IDStr] = 1
 				// function that writes to file here
-				v := reflect.ValueOf(search.Statuses[i])
-				values := make([]interface{}, v.NumField())
-				stringSlice := make([]string, 20)
-				for i := 0; i < v.NumField(); i++ {
-					values[i] = v.Field(i).Interface()
-					stringSlice = append(stringSlice, fmt.Sprintf("%v", values[i]))
-				}
+				// v := reflect.ValueOf(search.Statuses[i])
+				// values := make([]interface{}, v.NumField())
+				// stringSlice := make([]string, 20)
+				// for i := 0; i < v.NumField(); i++ {
+				// 	values[i] = v.Field(i).Interface()
+				// 	stringSlice = append(stringSlice, fmt.Sprintf("%v", values[i]))
+				// }
+				stringSlice := stringifyTweets(&search.Statuses[i])
 
 				if err := w.Write(stringSlice); err != nil {
 					log.Fatalln("error writing record to csv:", err)
