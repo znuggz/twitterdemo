@@ -7,6 +7,7 @@ as each thread gets unique tweets it writes them to a CSV file. Once 2000 unique
 some caveats, tweeters' standard (free) development account only allows 180 http requests in a 15 minute window, if the number of requests is reached, the program sleeps for 15 minutes and keeps trying until 2000 unique tweets are collected.
 
 before building, three open source go packages need to installed:
+
 go get github.com/coreos/pkg/flagutil
 go get github.com/dghubble/go-twitter/twitter
 go get github.com/dghubble/oauth1
