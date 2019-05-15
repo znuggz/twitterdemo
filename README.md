@@ -9,8 +9,11 @@ some caveats, tweeters' standard (free) development account only allows 180 http
 before building, three open source go packages need to installed:
 
 go get github.com/coreos/pkg/flagutil
+
 go get github.com/dghubble/go-twitter/twitter
+
 go get github.com/dghubble/oauth1
+
 
 to install: go install
 
