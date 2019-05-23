@@ -167,10 +167,10 @@ func getTweets(ch chan int, w *csv.Writer, tweetMap map[string]int, mux *sync.Mu
 
 		// start twitter account access config
 		flags := flag.NewFlagSet("user-auth", flag.ExitOnError)
-		consumerKey := flags.String("consumer-key", "DInZ28FABMD4h5VQn8qRo1zD8", "Twitter Consumer Key")
-		consumerSecret := flags.String("consumer-secret", "D2mtX6hPn42wYbCi1oTvNVOBKGaiS0N2YxYQADl56vReKjKmUt", "Twitter Consumer Secret")
-		accessToken := flags.String("access-token", "31434194-UONEjSn8eMJ1m8RWum4R4TmYAy3oM4XCR7B7EFmYX", "Twitter Access Token")
-		accessSecret := flags.String("access-secret", "6CLYyK12oGLb70241cuNN1Emsl6augPxkYpJde47xGJsS", "Twitter Access Secret")
+		consumerKey := flags.String("consumer-key", "", "Twitter Consumer Key")
+		consumerSecret := flags.String("consumer-secret", "", "Twitter Consumer Secret")
+		accessToken := flags.String("access-token", "", "Twitter Access Token")
+		accessSecret := flags.String("access-secret", "", "Twitter Access Secret")
 		flags.Parse(os.Args[1:])
 		flagutil.SetFlagsFromEnv(flags, "TWITTER")
 
